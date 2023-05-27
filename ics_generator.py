@@ -1,6 +1,7 @@
 import csv
 from ics import Calendar, Event
 from datetime import time, datetime, timedelta
+import pytz
 
 # Read the CSV file
 rows = []
@@ -16,6 +17,9 @@ with open('study.csv', newline='') as f:
 # Create a new calendar
 c = Calendar()
 
+# Set the timezone
+timezone = pytz.timezone("America/Sao_Paulo")
+
 for row in rows:
     date, topic, estimated_hours = row
     e = Event()
@@ -29,8 +33,8 @@ for row in rows:
         start_time = time(17, 0)  # 5 PM
         end_time = time(21, 0)  # 9 PM
 
-    e.begin = datetime.combine(date_obj, start_time)
-    e.end = datetime.combine(date_obj, end_time)
+    e.begin = timezone.localize(datetime.combine(date_obj, start_time))
+    e.end = timezone.localize(datetime.combine(date_obj, end_time))
     c.events.add(e)
 
 # Write the calendar to an .ics file
